@@ -21,43 +21,31 @@ class TicTacToeAction : Action {
 }
 
 class TicTacToeState : State {
-  int[3][3] board;
+  int[][] board;
   static int size = 3;
   
   this() {
-    for (int i = 0; i < TicTacToeState.size; i++) {
-      for (int j = 0; j < TicTacToeState.size; j++) {
-        board[i][j] = 0;
-      }
-    }
+    board = new int[][](TicTacToeState.size, TicTacToeState.size);
   }
   
   //Return true if it is a final state, otherwise false
   bool terminal_test() {
     //Check the horizontal and vertical lines
     for (int i = 0; i < TicTacToeState.size; i++) {
-      if ((board[i][0] != 0) & (board[i][0] == board[i][1]) & (board[i][1] == board[i][2])) {
-        return true;
-      }
-      if ((board[0][i] != 0) & (board[0][i] == board[1][i]) & (board[1][i] == board[2][i])) {
+      if (((board[i][0] != 0) & (board[i][0] == board[i][1]) & (board[i][1] == board[i][2])) | ((board[0][i] != 0) & (board[0][i] == board[1][i]) & (board[1][i] == board[2][i]))) {
         return true;
       }
     }
     
     //Check the cross lines
-    if ((board[0][0] != 0) & (board[0][0] == board[1][1]) & (board[1][1] == board[2][2])) {
-      return true;
-    }
-    if ((board[0][2] != 0) & (board[0][2] == board[1][1]) & (board[1][1] == board[2][0])) {
+    if (((board[0][0] != 0) & (board[0][0] == board[1][1]) & (board[1][1] == board[2][2])) | ((board[0][2] != 0) & (board[0][2] == board[1][1]) & (board[1][1] == board[2][0]))) {
       return true;
     }
     
     //Check if the board isn't full
-    for (int i = 0; i < TicTacToeState.size; i++) {
-      for (int j = 0; j < TicTacToeState.size; j++) {
-        if (board[i][j] == 0) {
-          return false;
-        }
+    foreach (b; board) {
+      if (any!"a == 0"(b)) {
+        return false;
       }
     }
     
@@ -85,15 +73,8 @@ class TicTacToeState : State {
       }
     }
     //Check the cross lines
-    if ((board[0][0] != 0) & (board[0][0] == board[1][1]) & (board[1][1] == board[2][2])) {
-        if (board[0][0] == 1) {
-          return 1;
-        } else {
-          return -1;
-        }
-    }
-    if ((board[0][2] != 0) & (board[0][2] == board[1][1]) & (board[1][1] == board[2][0])) {
-        if (board[0][2] == 1) {
+    if (((board[0][0] != 0) & (board[0][0] == board[1][1]) & (board[1][1] == board[2][2])) | ((board[0][2] != 0) & (board[0][2] == board[1][1]) & (board[1][1] == board[2][0]))) {
+        if (board[1][1] == 1) {
           return 1;
         } else {
           return -1;
@@ -120,9 +101,7 @@ class TicTacToeState : State {
     auto nstate = new TicTacToeState();
     // Copy the current state
     for (int i = 0; i < TicTacToeState.size; i++) {
-      for (int j = 0; j < TicTacToeState.size; j++) {
-        nstate.board[i][j] = board[i][j];
-      }
+      copy(board[i], nstate.board[i]);
     }
     //Update the state with the new action
     nstate.board[b.x][b.y] = b.player;

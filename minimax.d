@@ -8,7 +8,6 @@
 module minimax;
 
 import std.algorithm;
-import std.stdio;
 import std.container;
 
 
@@ -33,7 +32,7 @@ interface State {
     }
 }
 
-int max_value(State state, int alfa, int beta) 
+int max_value(State state, int alpha, int beta) 
   in {
     assert (state !is null);
   }
@@ -43,16 +42,16 @@ int max_value(State state, int alfa, int beta)
     }
     int v = int.min;
     foreach(action; state.actions(1)) {
-      v = max(v, min_value(state.result(action), alfa, beta));
+      v = max(v, min_value(state.result(action), alpha, beta));
       if (v >= beta) {
         return v;
       }
-      alfa = max(v, alfa);
+      alpha = max(v, alpha);
     }
     return v;
   }
 
-int min_value(State state, int alfa, int beta) 
+int min_value(State state, int alpha, int beta) 
   in {
     assert (state !is null);
   }
@@ -62,8 +61,8 @@ int min_value(State state, int alfa, int beta)
     }
     int v = int.max;
     foreach(action; state.actions(2)) {
-      v = min(v, max_value(state.result(action), alfa, beta));
-      if (v <= alfa) {
+      v = min(v, max_value(state.result(action), alpha, beta));
+      if (v <= alpha) {
         return v;
       }
       beta = min(v, beta);
